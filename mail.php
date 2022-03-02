@@ -1,64 +1,30 @@
 <?php
- <?
- require_once 'PHPMailer/PHPMailerAutoload.php';
- 
- $admin_email = array();
- foreach ( $_POST["admin_email"] as $key => $value ) {
-   array_push($admin_email, $value);
- }
- 
- $form_subject = trim($_POST["form_subject"]);
- 
- $mail = new PHPMailer;
- $mail->CharSet = 'UTF-8';
- 
- 
- 
- $c = true;
- $message = '';
- foreach ( $_POST as $key => $value ) {
-   if ( $value != ""  && $key != "admin_email" && $key != "form_subject" ) {
-     if (is_array($value)) {
-       $val_text = '';
-       foreach ($value as $val) {
-         if ($val && $val != '') {
-           $val_text .= ($val_text==''?'':', ').$val;
-         }
-       }
-       $value = $val_text;
-     }
-     $message .= "
-     " . ( ($c = !$c) ? '<tr>':'<tr>' ) . "
-     <td style='padding: 10px; width: auto;'><b>$key:</b></td>
-     <td style='padding: 10px;width: 100%;'>$value</td>
-     </tr>
-     ";
-   }
- }
- $message = "<table style='width: 50%;'>$message</table>";
- 
- 
- // От кого
- $mail->setFrom('adm@' . $_SERVER['HTTP_HOST'], 'Your best site');
+  use PHPMailer\PHPMailer\PHPMailer;
+  use PHPMailer\PHPMailer\Exception;
+
+  require 'phpmailer/src/Exception.php';
+  require 'phpmailer/src/PHPMailer.php';
+  require 'phpmailer/src/SMTP.php';
   
- // Кому
- foreach ( $admin_email as $key => $value ) {
-   $mail->addAddress($value);
- }
- // Тема письма
- $mail->Subject = $form_subject;
-  
- // Тело письма
- $body = $message;
- // $mail->isHTML(true);  это если прям верстка
- $mail->msgHTML($body);
- 
- // Приложения
- if ($_FILES){
-   foreach ( $_FILES['file']['tmp_name'] as $key => $value ) {
-     $mail->addAttachment($value, $_FILES['file']['name'][$key]);
-   }
- }
- $mail->send();
- ?>
+
+  $mail = new PHPMailer(true);
+  $mail->CharSet = 'UTF-8';
+  $mail->setLanguage( 'ru', 'phpmailer/language/');
+  $mail->isHTML( true);
+  $mail->isSMTP (true);                                          
+  $mail->Host = 'smtp.gmail.com';                    
+  $mail->SMTPAuth = true ;                                 
+  $mail->Username = 'maxklimjob91@gmail.com' ;                    
+  $mail->Password = '9743537m' ;                             
+  $mail->SMTPSecure = PHPMailer :: ENCRYPTION_SMTPS ;            
+  $mail->Port = 465 ; 
+
+  // от кого
+  $mail->setFrom('maxklimjob91@gmail.com', 'leadadvisors.com');
+  // кому 
+  $mail->addAddress($_POST["email"]);
+  $mail->Subject = 'Subscription completed successfully Lead Advisors';
+  $body = '<h1>Hello</>' . $_POST["email"];
+  $mail->Body = $body;
+  $mail->send();
 ?>

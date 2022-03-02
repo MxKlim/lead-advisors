@@ -128,6 +128,7 @@ window.addEventListener('DOMContentLoaded', () => {
     },
     status = ['success', 'error'],
     preloder = document.querySelector('.preloder');
+    preloder.classList.remove('hide-preloder');
     showPopap('.overlay', message.error, status[1]);
     const formData = new FormData(form);
 
@@ -137,10 +138,8 @@ window.addEventListener('DOMContentLoaded', () => {
     
     request.onreadystatechange = () => {
       
-      
       if (request.readyState === 1) preloder.classList.remove('hide-preloder');
       
-
       if (request.readyState === 4) {
         preloder.classList.add('hide-preloder');
         if (request.status === 200) {
